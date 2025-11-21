@@ -15,12 +15,12 @@ def create_user(db: Session, user: schemas.UserCreate):
         raise ValueError("Mobile number already registered")
     
     try:
-        
+        hashed_password = get_password_hash(user.password)
         db_user = models.User(
             name=user.name,
             email=user.email,
             mobile_number=user.mobile_number,
-            password=user.password  
+            password=hashed_password 
         )
         db.add(db_user)
         db.commit()
@@ -37,11 +37,14 @@ def authenticate_user(db: Session, email: str, password: str):
     user = get_user_by_email(db, email)
     if not user:
         return False
-    
-    
-    if user.password != password:
+    if not verify_password(password, user.password):
         return False
     return user
+    
+    
+    # if user.password != password:
+    #     return False
+    # return user
 
 
 def create_category(db: Session, category: schemas.CategoryCreate, user_id: int):

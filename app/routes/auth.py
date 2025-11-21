@@ -17,18 +17,15 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
         )
     
     try:
-        # This should return ONLY the user object, not a tuple
         created_user = crud.create_user(db=db, user=user)
         return created_user
         
     except ValueError as e:
-        # Handle validation errors (email/mobile already exists)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
         )
     except Exception as e:
-        # Handle other exceptions
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create user: {str(e)}"

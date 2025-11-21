@@ -44,3 +44,4 @@ async def catch_exceptions_middleware(request: Request, call_next):
 @app.get("/")
 def read_root():
     return {"message": "Category & Product API is running"}
+
