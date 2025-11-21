@@ -10,6 +10,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     
+    
 class UserOut(UserBase):
     id: int
     class config:
@@ -39,6 +40,10 @@ class CategoryOut(CategoryBase):
     user_id:int
     class Config:
         from_attributes = True
+        
+class CategoryUpdate(BaseModel):
+    name: str | None = None
+    description: str | None = None
         
         
 class ProductBase(BaseModel):
