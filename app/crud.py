@@ -1,10 +1,11 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
+from . import product, cateogry
 
 def create_category(db: Session, data: schemas.CategoryCreate):
     category = models.Category(
         name=data.name, 
-        description=data.description  # Now properly included
+        description=data.description  
     )
     db.add(category)
     db.commit()
