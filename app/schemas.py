@@ -1,6 +1,5 @@
 from pydantic import BaseModel, EmailStr, validator
 from typing import Optional
-from fastapi.openapi.models import EmailStr
 
 class UserBase(BaseModel):
     name: str
@@ -14,13 +13,17 @@ class UserCreate(UserBase):
     def validate_password(cls, v):
         if len(v) < 8:
             raise ValueError('Password must be at least 8 characters long')
+        if len(v) > 128:  # Reasonable character limit
+            raise ValueError('Password must be less than 128 characters')
         return v
-    
     
 class UserOut(UserBase):
     id: int
-    class config:
-        from_attributes=True
+    
+    class Config:
+        from_attributes = True
+        
+# ... rest of your schemas remain the same ...
         
 class UserLogin(BaseModel):
     email: EmailStr

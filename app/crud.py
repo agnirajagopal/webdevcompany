@@ -1,26 +1,27 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
-from .auth import get_password_hash, verify_password
+from .auth import get_password_hash, verify_password  # These now use our secure utility
 
-
+# All your CRUD functions remain exactly the same
 def create_user(db: Session, user: schemas.UserCreate):
     
     existing_user = db.query(models.User).filter(models.User.email == user.email).first()
     if existing_user:
         raise ValueError("Email already registered")
     
-    
     existing_mobile = db.query(models.User).filter(models.User.mobile_number == user.mobile_number).first()
     if existing_mobile:
         raise ValueError("Mobile number already registered")
     
     try:
+        # This now uses our secure hashing function
         hashed_password = get_password_hash(user.password)
+        
         db_user = models.User(
             name=user.name,
             email=user.email,
             mobile_number=user.mobile_number,
-            password=hashed_password 
+            password=hashed_password
         )
         db.add(db_user)
         db.commit()
@@ -37,9 +38,13 @@ def authenticate_user(db: Session, email: str, password: str):
     user = get_user_by_email(db, email)
     if not user:
         return False
+    
+    # This now uses our secure verification function
     if not verify_password(password, user.password):
         return False
     return user
+
+
     
     
     # if user.password != password:
